@@ -23,7 +23,7 @@ end
 
 def print(students)
   students.each_with_index do |student,i|
-    if student[:name][0]=="N"
+    if student[:name].length<12
       puts "#{i+1}. #{student[:name]} (#{student[:cohort]} cohort)"
     end
   end
@@ -45,7 +45,7 @@ def input_students
     #add the student hash to the array
     students << {name: name, cohort: :november}
     puts "Now we have #{students.count} students"
-    name = gets.chomp
+    name = gets.chomp.capitalize
   end
   #return the array 
   students
