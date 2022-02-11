@@ -1,66 +1,75 @@
-
-=begin
-students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
-]
-=end
-
-
-def print_header
-  puts "The students of Villains Academy"
-  puts "--------------"
-end
-
-def print(students)
-
-  i = 0
-  while i < students.length
-    puts "#{i+1}. #{students[i][:name]} (#{students[i][:cohort]} cohort, I'm a #{students[i][:hobby]} and I'm from #{students[i][:country]})".center(80, ".")
-    i += 1
-  end
-
-end
-
-def print_footer(students)
-  puts "Overall, we have #{students.count} great students!"
-end
-
 def input_students
-  puts "Please enter the name and cohort (November or December) of the students"
-  puts "To finish, just hit return twice"
-  #create an empty array
+  puts "Please enter the names of the students and their cohort"
+  puts "To finish, just type quit"
+  # create an empty array
   students = []
-  #get the first name and cohort
-  answer = gets.chomp.split(" ").map{|e|e.capitalize}
-  #while the name is not empty, repeat this code
-  while !answer.empty? do
-    #add the student hash to the array with a default value of TBC if he hasn't provided a cohort
-    answer[1] = "TBC" if answer[1] == nil
-    #what if they make a typo
-    while answer[1] != "November" && answer[1] != "December" && answer[1] != "TBC"
-      puts "Please could you repeat the cohort"
-      answer[1] = gets.chomp.capitalize
-    end
-    students << {name: answer[0], cohort: answer[1].to_sym, country: :italy, hobby: :coder}
-    puts "Now we have #{students.count} students"
-    answer = gets.chomp.split(" ").map{|e|e.capitalize}
+  # name_and_cohort = []
+  # name = name_and_cohort[0].capitalize
+  # cohort = name_and_cohort[1].strip.capitalize.to_sym
+  name_and_cohort = gets.chomp.split(",")
+  
+  while name_and_cohort[0] != "Quit"
+      
+      while name_and_cohort.empty?
+          puts "Please type name and cohort separated by a comma"
+          name_and_cohort = gets.chomp.split(",")
+      end
+      
+      break if name_and_cohort[0] == "Quit"
+
+      if !name_and_cohort.empty? && name_and_cohort[0] != "Quit"
+          name = name_and_cohort[0].strip.capitalize
+          cohort = name_and_cohort[1].strip.capitalize.to_sym
+      end
+      
+      
+      if cohort != :November && cohort[0] == "N"
+          cohort = :November
+      elsif cohort != :December && cohort[0] == "D"
+          cohort = :December
+      else 
+          cohort = :TBC
+      end
+      students << {name: name, cohort: cohort, hobby: :skiing, food: :upma}
+      puts "#{students}"
+      
+      if students.count == 1
+          puts "Now we have #{students.count} student"
+      else
+          puts "Now we have #{students.count} students"
+      end
+
+      name_and_cohort = gets.chomp.split(",")
   end
-  #return the array 
   students
 end
 
-students = input_students
-print_header
-print(students)
-print_footer(students)
+#print header
+def header
+  puts "The students of Villains Academy".center(80,'.')
+  puts "-------------".center(80)
+end
 
+#print names
+def names(students) # takes an array
+  i = 0
+  cohorts = students.map{|student|student[:cohort]}.uniq
+  puts cohorts
+  while i < cohorts.length
+      puts "In the #{cohorts[i]} cohort we have:"
+      students.select do |student|
+      puts student[:name] if student[:cohort] == cohorts[i]
+      end
+      i += 1
+  end
+end
+
+#print footer
+def footer(students) # takes an array
+  puts "Overall, we have #{students.count} great students"
+end
+
+student = input_students
+header
+names(student)
+footer(student)
