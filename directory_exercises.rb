@@ -1,3 +1,5 @@
+require 'csv'
+puts __FILE__
 @students = []
 
 def menu
@@ -117,27 +119,24 @@ def footer(students) # takes an array
 end
     
 def save_students
-    file = File.open("students.csv", "w")
-    @students.each do |student|
-        student_data = [student[:name], student[:cohort]]
-        csv_line = student_data.join(",")
-        file.puts csv_line
+    CSV.open("./students.csv", "wb") do |csv|
+        @students.each do |student|
+            student_data = [student[:name], student[:cohort]]
+            csv << student_data
+        end
     end
-    file.close
 end
 
 def load_students(filename = "students.csv")
-    file = File.open(filename, "r")
-    file.readlines.each do |line|
-        name, cohort = line.chomp.split(",")
+    CSV.foreach(filename, "r") do |row|
+        name, cohort = row
         @students << {name: name, cohort: cohort.to_sym}
     end
-    file.close
 end
 
 def try_load_students
     filename = ARGV.first
-    return if filename.nil?
+    filename = "students.csv" if filename.nil?
     if File.exist?(filename)
         load_students(filename)
         puts "Loaded #{@students.count} students from #{filename}"
